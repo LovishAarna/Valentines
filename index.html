@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For Aarna | My Valentineee</title>
+    <title>For My Aarna | 2614</title>
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     
@@ -18,397 +17,284 @@
 
     <style>
         :root {
-            --accent: #ff2d55;
-            --glass: rgba(12, 10, 9, 0.8);
-            --border: rgba(255, 255, 255, 0.12);
+            --dark-pink: #d4145a;
+            --deep-black: #0c0a0a;
+            --glass-black: rgba(0, 0, 0, 0.92);
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--deep-black);
+            color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0c0a09;
-            color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
-            height: 100dvh;
-            width: 100vw;
+        /* Dark Pink Glow Background */
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #5a0c24 0%, #0c0a0a 100%);
         }
 
-        /* Layer 1: Aurora Animation */
-        .aurora-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            filter: blur(80px);
-            opacity: 0.7;
+        /* Floating Radiant Hearts */
+        .heart-particle {
+            position: absolute; color: rgba(212, 20, 90, 0.5);
+            filter: drop-shadow(0 0 8px rgba(212, 20, 90, 0.8));
+            animation: floatUp 12s linear infinite; z-index: 0; pointer-events: none;
         }
 
-        .aurora-blob {
-            position: absolute;
-            width: 70vw;
-            height: 70vw;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-            animation: move 18s infinite alternate ease-in-out;
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
+            20% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(1.3); opacity: 0; }
         }
 
-        @keyframes move {
-            from { transform: translate(-15%, -15%) rotate(0deg); }
-            to { transform: translate(25%, 25%) rotate(270deg); }
-        }
-
-        /* Glassmorphism Cards */
+        /* Translucent Black Glass Card */
         .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: 2.5rem;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-            width: 92%;
-            max-width: 500px;
-            padding: 2.5rem;
-            position: relative;
+            background: var(--glass-black);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(212, 20, 90, 0.4); border-radius: 2.5rem;
+            padding: 2.2rem; width: 92%; max-width: 420px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9); text-align: center; z-index: 10;
         }
 
-        .heading-serif {
+        .heading-gradient {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(to bottom right, #ffffff, #ffcbd5, #ff7171);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
+            background: linear-gradient(to bottom right, #ffffff, #ff758c, #d4145a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(212, 20, 90, 0.3));
         }
 
-        /* Progress Bar */
-        .progress-container {
-            position: fixed;
-            top: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            height: 5px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            z-index: 100;
-        }
-        #progress-bar {
-            width: 20%;
-            height: 100%;
-            background: linear-gradient(90deg, #ff2d55, #ff7171);
-            border-radius: 10px;
-            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        .glow-emoji { filter: drop-shadow(0 0 15px rgba(212, 20, 90, 1)); display: inline-block; }
 
-        /* Buttons */
+        .step { display: none; opacity: 0; flex-direction: column; align-items: center; }
+        .step.active { display: flex; opacity: 1; }
+
         .btn-primary {
-            background: linear-gradient(135deg, #ff2d55 0%, #d4145a 100%);
-            padding: 1.2rem 2.5rem;
-            border-radius: 9999px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 10px 25px rgba(255, 45, 85, 0.4);
+            background: linear-gradient(135deg, #d4145a 0%, #8a0e35 100%);
+            color: white; padding: 1.2rem 2.5rem; border-radius: 9999px;
+            font-weight: 800; width: 100%; box-shadow: 0 15px 30px rgba(212, 20, 90, 0.4);
+            transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
         }
 
-        @media (hover: hover) {
-            .btn-primary:hover {
-                transform: scale(1.05) translateY(-3px);
-                box-shadow: 0 15px 35px rgba(255, 45, 85, 0.6);
-            }
+        input#passInput {
+            background: rgba(255, 255, 255, 0.03); border: 2px solid var(--dark-pink);
+            border-radius: 1.2rem; padding: 1.2rem; width: 100%; text-align: center;
+            font-size: 2rem; letter-spacing: 0.8rem; color: #ff758c; outline: none; margin-bottom: 1.5rem;
         }
 
-        .btn-primary:active {
-            transform: scale(0.95);
+        /* Photo Frame */
+        .photo-frame {
+            width: 100%; height: 380px; border-radius: 2rem; overflow: hidden;
+            border: 3px solid rgba(212, 20, 90, 0.6); margin-bottom: 1.5rem;
+            background: #000; display: flex; align-items: center; justify-content: center;
+        }
+        .photo-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* Music Button */
+        #music-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--dark-pink);
+            width: 45px; height: 45px; border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            backdrop-filter: blur(10px);
         }
 
-        /* Navigation Visibility */
-        .step-content {
-            display: none;
-            opacity: 0;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .step-content.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* Bento Grid */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            width: 100%;
-            margin: 1.5rem 0;
-        }
-        @media (min-width: 640px) {
-            .bento-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        .bento-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 1.2rem;
-            border-radius: 1.5rem;
-            text-align: left;
-        }
-
-        #three-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-
-        .pulse {
-            animation: heartPulse 2s infinite;
-        }
-        @keyframes heartPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255,45,85,0.5)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255,45,85,0.8)); }
-        }
+        .pulse { animation: pulseHeart 2.5s infinite; }
+        @keyframes pulseHeart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <!-- Layer 1: Aurora Bg -->
-    <div class="aurora-bg">
-        <div class="aurora-blob" style="background: hsla(333,70%,55%,.4); top: -10%; left: -10%;"></div>
-        <div class="aurora-blob" style="background: hsla(282, 82%, 54%, .3); top: 20%; right: -10%; animation-delay: -4s;"></div>
-        <div class="aurora-blob" style="background: hsla(210, 89%, 60%, .3); bottom: -10%; left: 10%; animation-delay: -8s;"></div>
-    </div>
+    <div class="bg-glow"></div>
+    <div id="heartContainer"></div>
 
-    <!-- Layer 2: 3D Hearts -->
-    <canvas id="three-canvas"></canvas>
+    <!-- Background Music -->
+    <audio id="mySong" loop>
+        <source src="https://files.catbox.moe/p5isbc.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-btn" onclick="toggleMusic()">🎵</div>
 
-    <!-- Progress Bar -->
-    <div class="progress-container">
-        <div id="progress-bar"></div>
-    </div>
-
-    <main class="relative z-50 flex items-center justify-center h-full w-full p-4">
+    <main class="h-full w-full flex items-center justify-center relative px-4">
         
-        <!-- Step 1: Welcome -->
-        <div id="step-1" class="step-content active glass-card">
-            <div class="text-7xl mb-6 pulse">❤️</div>
-            <h1 class="heading-serif text-5xl mb-4 italic">Heyyy Beautifulll,</h1>
-            <p class="text-slate-300 text-lg mb-10 leading-relaxed">I built a little world for you, just to bring a smile to your faceee.</p>
-            <button onclick="nextStep(2)" class="btn-primary">Let's Beginnn</button>
+        <!-- Slide 1: Lock -->
+        <div id="step-1" class="step active glass-card">
+            <div class="text-6xl mb-6 pulse glow-emoji">🔐</div>
+            <h1 class="heading-gradient text-3xl mb-2 italic">Guess The Passwordd Babbyyyy</h1>
+            <p class="text-gray-500 text-sm mb-8 italic">Enter Our Magic Code To Beginnn... ✨</p>
+            <input type="password" id="passInput" maxlength="4" placeholder="****" inputmode="numeric">
+            <button onclick="checkPass()" class="btn-primary">Unlock Hearttt ❤️</button>
+            <p id="error" class="text-pink-600 text-xs mt-4 opacity-0 font-bold">Think Againnn Jaannn! 🥺</p>
         </div>
 
-        <!-- Step 2: World Message -->
-        <div id="step-2" class="step-content glass-card">
-            <div class="text-7xl mb-6">🎉</div>
-            <h1 class="heading-serif text-4xl mb-4">Asking To Be My Worlddd !!</h1>
-            <p class="text-slate-300 text-lg mb-10 leading-relaxed">For making the world so much brighter. Your existence is a gift, and I am so lucky to witness ittt.</p>
-            <button onclick="nextStep(3)" class="btn-primary">There's moreee...</button>
+        <!-- Slide 2: Welcome -->
+        <div id="step-2" class="step glass-card">
+            <h1 class="heading-gradient text-4xl mb-6 italic">Heyyy Beautifulll Aarnaaa...</h1>
+            <p class="text-gray-400 text-lg leading-relaxed mb-10">I Built This Little Worlddd For Youuu Just To Bring A Smileee To Your Faceee Jaannn. 🌹</p>
+            <button onclick="nextStep(3)" class="btn-primary">Let's Gooo Babyyy ⮕</button>
         </div>
 
-        <!-- Step 3: Bento Reasons -->
-        <div id="step-3" class="step-content glass-card" style="max-width: 600px;">
-            <h2 class="heading-serif text-3xl mb-4">A Few Things I Adoreee</h2>
-            <div class="bento-grid">
-                <div class="bento-item sm:col-span-2">
-                    <h3 class="text-pink-400 font-bold mb-1 italic">✨ Your Unmatched Kindness</h3>
-                    <p class="text-sm text-slate-300">The genuine warmth you show to everyone is something truly rare and beautifulll.</p>
-                </div>
-                <div class="bento-item">
-                    <h3 class="text-pink-400 font-bold mb-1 italic">😊 That Smileee</h3>
-                    <p class="text-sm text-slate-300">It's literally a work of art.</p>
-                </div>
-                <div class="bento-item">
-                    <h3 class="text-pink-400 font-bold mb-1 italic">🌟 Your Beautyyy</h3>
-                    <p class="text-sm text-slate-300">God took a lot of time to make you perfectionnn.</p>
-                </div>
-                <div class="bento-item sm:col-span-2 bg-pink-500/10 border-pink-500/30">
-                    <p class="text-sm text-pink-100 italic text-center">"You are just beautiful like moon, every beautiful scenery reminds me of youuu."</p>
-                </div>
+        <!-- Slide 3: Adorable -->
+        <div id="step-3" class="step glass-card">
+            <div class="text-6xl mb-6 glow-emoji">🧸</div>
+            <h1 class="heading-gradient text-3xl mb-6 italic">Aarna...</h1>
+            <p class="text-gray-300 text-lg leading-relaxed mb-10">
+                Do You Even Know How Adorable You Are? The Way You Talk, Your Little Expressions, Your Mood Swings, Your Laugh — Everything Is Dangerously Cute. ✨
+            </p>
+            <button onclick="nextStep(4)" class="btn-primary">Keep Reading Babyyy ⮕</button>
+        </div>
+
+        <!-- Slide 4: Favorite Everything -->
+        <div id="step-4" class="step glass-card">
+            <div class="text-6xl mb-6 glow-emoji">🧚‍♀️</div>
+            <h1 class="heading-gradient text-2xl mb-6 italic">You’re My Favorite Everythinggg</h1>
+            <p class="text-gray-300 text-md leading-relaxed mb-10">
+                You Act Strong Sometimes, But I Know You Have The Softest Heart. And Honestly? I Wouldn’t Change A Single Thing About You. You’re My Favorite Notification, My Favorite Person, And My Favorite Everything. 🤍
+            </p>
+            <button onclick="nextStep(5)" class="btn-primary">Next Slideee Babyyy ⮕</button>
+        </div>
+
+        <!-- Slide 5: Beauty Manage -->
+        <div id="step-5" class="step glass-card">
+            <div class="text-6xl mb-4 glow-emoji">💖</div>
+            <h1 class="heading-gradient text-xl mb-4 italic">How Do You Manage It?</h1>
+            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                Aarna, How Do You Manage To Look This Beautiful Without Even Trying? That Smile Of Yours Should Honestly Be Illegal — It Steals My Focus Every Single Time. And Those Eyes? Don’t Even Get Me Started… One Look And I’m Officially Gone. You’re Cute, You’re Gorgeous, And You Definitely Know How To Make My Heart Misbehave. 💕
+            </p>
+            <button onclick="nextStep(6)" class="btn-primary">I Love Youuu So Muchhh ⮕</button>
+        </div>
+
+        <!-- Slide 6: Lucky -->
+        <div id="step-6" class="step glass-card">
+            <div class="text-6xl mb-6 glow-emoji">😊</div>
+            <h1 class="heading-gradient text-4xl mb-6 italic">I'm So Luckyyy</h1>
+            <p class="text-gray-400 text-lg mb-10">Out Of Billions Of Peopleee, I'm The One Who Gets To Know Youuu. I Never Take That For Granteddd Jaannn. 😍</p>
+            <button onclick="nextStep(7)" class="btn-primary">Almost Thereee ⮕</button>
+        </div>
+
+        <!-- Slide 7: Promise -->
+        <div id="step-7" class="step glass-card">
+            <div class="text-6xl mb-6 glow-emoji">💍</div>
+            <h1 class="heading-gradient text-4xl mb-6 italic">My Promiseee To Youuu</h1>
+            <p class="text-gray-400 text-lg mb-10">I Promiseee To Alwaysss Be By Your Side, To Protectttt Your Preciousss Smileee And Love You More Every Single Dayyy. 🤝</p>
+            <button onclick="nextStep(8)" class="btn-primary">See Your Beautyyy? ⮕</button>
+        </div>
+
+        <!-- Slide 8: Photo Gallery -->
+        <div id="step-8" class="step glass-card">
+            <h1 class="heading-gradient text-3xl mb-6 italic">My Favorite Sceneryyy</h1>
+            <div class="photo-frame">
+                <img src="https://i.postimg.cc/34StGj0G/her-1.jpg" id="galleryImg" alt="Aarna Perfection">
             </div>
-            <button onclick="nextStep(4)" class="btn-primary">Continueee...</button>
+            <p class="text-pink-400 text-xs italic mb-4">You Look Sooo Beautifulll Alwaysss My Jaan... ✨</p>
+            <div class="flex gap-4 w-full">
+                <button onclick="prevPhoto()" class="bg-white/10 flex-1 py-3 rounded-xl text-xs font-bold border border-white/10 uppercase">Prev</button>
+                <button onclick="nextPhoto()" class="bg-white/10 flex-1 py-3 rounded-xl text-xs font-bold border border-white/10 uppercase">Next</button>
+            </div>
+            <button onclick="showFinale()" class="btn-primary mt-6">The Best Parttt ⮕</button>
         </div>
 
-        <!-- Step 4: The Question -->
-        <div id="step-4" class="step-content glass-card">
-            <div id="question-box">
-                <div class="text-7xl mb-6">🤍</div>
-                <h1 class="heading-serif text-4xl mb-4">My Question For Youuu</h1>
-                <p class="text-slate-300 mb-8">I wanttt to askkk you somethinggg i've wanted to for a longgg time...</p>
-                
-                <h2 class="text-2xl font-bold mb-10 text-white italic">Aarna, Will You Be My Valentineee ??</h2>
-                
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
-                    <button id="yes-btn" onclick="handleYes()" class="btn-primary w-full sm:w-auto px-16 py-5 text-2xl">YESSS</button>
-                    <button id="no-btn" onmouseover="moveNo()" ontouchstart="moveNo()" class="bg-white/5 border border-white/10 px-8 py-3 rounded-full text-white/60 text-sm">Noo</button>
-                </div>
-                <p id="retry-msg" class="text-pink-400 mt-6 opacity-0 text-sm italic">Think againnn... I lovee youu...</p>
-            </div>
-
-            <!-- Climax Message -->
-            <div id="final-message" class="hidden flex-col items-center">
-                <div class="text-8xl mb-6 pulse">💖</div>
-                <h1 class="heading-serif text-4xl sm:text-5xl font-bold">I Loveeee youuuuuu soooooo muchhhhhh babbbyyyyyyy ! 🤍</h1>
+        <!-- Slide 9: FINALE -->
+        <div id="step-9" class="step glass-card">
+            <div class="text-8xl mb-6 pulse glow-emoji">💖</div>
+            <h1 class="heading-gradient text-4xl mb-4 font-bold italic">Happy Valentine's Dayyy Jaannn!</h1>
+            <p class="text-2xl italic text-white mb-8">Aarna, You Are My Whole Worlddd. 🤍</p>
+            <div class="space-y-4">
+                <p class="text-lg text-pink-300 font-bold">I Loveeeee Youuuuu Soooooooo Muchhhhhh Babbbyyyyyyy Jaannn! 😘</p>
+                <p class="text-xs text-gray-600 uppercase tracking-[0.4em]">Forever & Always Yours</p>
             </div>
         </div>
 
     </main>
 
     <script>
-        // --- Navigation ---
+        const audio = document.getElementById('mySong');
+        let playing = false;
+
+        function toggleMusic() {
+            if (playing) { audio.pause(); } else { audio.play(); }
+            playing = !playing;
+        }
+
+        // Gallery Photos
+        const photos = [
+            "https://i.postimg.cc/34StGj0G/her-1.jpg",
+            "https://i.postimg.cc/bDCmn0Sx/her-2.jpg",
+            "https://i.postimg.cc/N9fNLCF4/her-3.jpg",
+            "https://i.postimg.cc/yxZxb68X/k.jpg"
+        ];
+        let currentPhotoIdx = 0;
+
+        function nextPhoto() {
+            currentPhotoIdx = (currentPhotoIdx + 1) % photos.length;
+            updateGalleryImage();
+        }
+        function prevPhoto() {
+            currentPhotoIdx = (currentPhotoIdx - 1 + photos.length) % photos.length;
+            updateGalleryImage();
+        }
+        function updateGalleryImage() {
+            const img = document.getElementById('galleryImg');
+            gsap.to(img, { opacity: 0, duration: 0.2, onComplete: () => {
+                img.src = photos[currentPhotoIdx];
+                gsap.to(img, { opacity: 1, duration: 0.2 });
+            }});
+        }
+
+        // Floating Hearts Logic
+        const container = document.getElementById('heartContainer');
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 5 + 7) + 's';
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 12000);
+        }
+        setInterval(createHeart, 450);
+
+        // Password Logic
+        function checkPass() {
+            const val = document.getElementById('passInput').value;
+            if(val === '2614') {
+                audio.play(); // Start Song
+                playing = true;
+                nextStep(2);
+            } else {
+                const err = document.getElementById('error');
+                err.style.opacity = '1';
+                gsap.fromTo("#step-1", {x: -15}, {x: 15, duration: 0.1, repeat: 5, yoyo: true});
+            }
+        }
+
+        // Slide Navigation
         let currentStepNum = 1;
-        function nextStep(step) {
-            const currentEl = document.getElementById(`step-${currentStepNum}`);
-            const nextEl = document.getElementById(`step-${step}`);
-            const progress = document.getElementById('progress-bar');
-
-            gsap.to(currentEl, { opacity: 0, y: -30, duration: 0.5, onComplete: () => {
-                currentEl.classList.remove('active');
-                nextEl.classList.add('active');
-                gsap.fromTo(nextEl, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6 });
-                currentStepNum = step;
-                progress.style.width = (step / 4) * 100 + '%';
+        function nextStep(stepNum) {
+            const current = document.getElementById(`step-${currentStepNum}`);
+            const next = document.getElementById(`step-${stepNum}`);
+            gsap.to(current, { opacity: 0, y: -40, scale: 0.9, duration: 0.5, onComplete: () => {
+                current.style.display = 'none';
+                next.style.display = 'flex';
+                gsap.fromTo(next, { opacity: 0, y: 40, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.4)" });
+                currentStepNum = stepNum;
             }});
         }
 
-        // --- No Button Dodge ---
-        function moveNo() {
-            const noBtn = document.getElementById('no-btn');
-            const msg = document.getElementById('retry-msg');
-            const x = (Math.random() - 0.5) * (window.innerWidth * 0.7);
-            const y = (Math.random() - 0.5) * (window.innerHeight * 0.7);
-            gsap.to(noBtn, { x: x, y: y, duration: 0.4, ease: "power2.out" });
-            gsap.to(msg, { opacity: 1, duration: 0.3 });
-        }
-
-        // --- Final Sequence ---
-        let heartsExploded = false;
-        function handleYes() {
-            const questionBox = document.getElementById('question-box');
-            const finalMsg = document.getElementById('final-message');
-            document.getElementById('progress-bar').style.width = '100%';
-
-            gsap.to(questionBox, { opacity: 0, scale: 0.8, duration: 0.5, onComplete: () => {
-                questionBox.style.display = 'none';
-                finalMsg.classList.remove('hidden');
-                finalMsg.classList.add('flex');
-                gsap.from(finalMsg, { opacity: 0, y: 50, duration: 1, ease: "back.out(1.7)" });
-                
-                heartsExploded = true;
-                triggerFinale();
-            }});
-        }
-
-        function triggerFinale() {
-            const duration = 6 * 1000;
+        // Final Celebration
+        function showFinale() {
+            nextStep(9);
+            const duration = 20 * 1000;
             const end = Date.now() + duration;
-
             (function frame() {
-                confetti({
-                    particleCount: 4,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.8 },
-                    colors: ['#ff2d55', '#ffffff', '#ffcbd5']
-                });
-                confetti({
-                    particleCount: 4,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.8 },
-                    colors: ['#ff2d55', '#ffffff', '#ffcbd5']
-                });
-
+                confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0, y: 0.8 }, colors: ['#d4145a', '#ffffff', '#ff758c'] });
+                confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1, y: 0.8 }, colors: ['#d4145a', '#ffffff', '#ff758c'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
-
-            // Emoji Burst
-            const scalar = 2;
-            const heart = confetti.shapeFromText({ text: '❤️', scalar });
-            confetti({
-                shapes: [heart],
-                particleCount: 15,
-                scalar,
-                spread: 100,
-                origin: { y: 0.6 }
-            });
         }
-
-        // --- Optimized Three.js Background ---
-        let scene, camera, renderer, heartMeshes = [];
-        function initThree() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            const heartShape = new THREE.Shape();
-            heartShape.moveTo(25, 25);
-            heartShape.bezierCurveTo(25, 25, 20, 0, 0, 0);
-            heartShape.bezierCurveTo(-30, 0, -30, 35, -30, 35);
-            heartShape.bezierCurveTo(-30, 55, -10, 77, 25, 95);
-            heartShape.bezierCurveTo(60, 77, 80, 55, 80, 35);
-            heartShape.bezierCurveTo(80, 35, 80, 0, 50, 0);
-            heartShape.bezierCurveTo(35, 0, 25, 25, 25, 25);
-
-            const geometry = new THREE.ExtrudeGeometry(heartShape, { depth: 5, bevelEnabled: true, bevelThickness: 2, bevelSize: 2 });
-            
-            for (let i = 0; i < 25; i++) {
-                const material = new THREE.MeshPhongMaterial({ 
-                    color: i % 2 === 0 ? 0xff2d55 : 0xff7171,
-                    shininess: 100 
-                });
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, -200);
-                mesh.scale.set(0.2, 0.2, 0.2);
-                mesh.rotation.z = Math.PI;
-                mesh.userData = { speed: 0.4 + Math.random(), rot: (Math.random() - 0.5) * 0.02 };
-                heartMeshes.push(mesh);
-                scene.add(mesh);
-            }
-
-            const light = new THREE.DirectionalLight(0xffffff, 1.5);
-            light.position.set(0, 0, 100);
-            scene.add(light);
-            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-            camera.position.z = 400;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            heartMeshes.forEach(m => {
-                if (!heartsExploded) {
-                    m.position.y += m.userData.speed;
-                    m.rotation.y += m.userData.rot;
-                    if (m.position.y > 400) m.position.y = -400;
-                } else {
-                    // Explode outward
-                    m.position.y += 15;
-                    m.position.x += m.position.x > 0 ? 5 : -5;
-                    m.scale.multiplyScalar(0.96);
-                }
-            });
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
 
         window.onload = () => {
-            initThree();
-            animate();
-            gsap.from(".glass-card", { opacity: 0, scale: 0.9, y: 40, duration: 1.2, ease: "expo.out" });
+            gsap.from(".glass-card", { opacity: 0, scale: 0.8, y: 60, duration: 1.5, ease: "expo.out" });
         };
     </script>
 </body>
